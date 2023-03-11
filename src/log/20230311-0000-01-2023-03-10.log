@@ -1,0 +1,20 @@
+
+Request: GET / at Fri Mar 10 2023 00:36:47 GMT+0530, IP: ::1, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36
+Response Body:
+<div align="center">APIs are up and running</div>
+Response: 200 12.476 ms 
+
+Request: GET /favicon.ico at Fri Mar 10 2023 00:36:47 GMT+0530, IP: ::1, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36
+Response: 404 4.441 ms 
+
+Request: GET / at Fri Mar 10 2023 00:39:47 GMT+0530, IP: ::1, User Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36
+Response Body:
+<div align="center">APIs are up and running</div>
+Response: 304 6.486 ms 
+
+Request: POST /v1/register at Fri Mar 10 2023 10:16:36 GMT+0530, IP: ::ffff:127.0.0.1, User Agent: Thunder Client (https://www.thunderclient.com)
+Request Body:
+{
+	"mobile": "9958603469"
+}
+Response: 404 2.329 ms 

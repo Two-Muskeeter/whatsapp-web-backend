@@ -5,7 +5,8 @@ export default {
         failed: false
     },
     files: {
-        userData: 'user-data.json'
+        userData: 'user-data.json',
+        mobileOtp: 'mobile-otp.json'
     }
 
 };

@@ -5,33 +5,23 @@ import { v4 as uuid } from 'uuid';
 import otpGenerator from 'otp-generator';
 import moment from 'moment';
 import { LoginToken } from '../../tokenGenerator';
+import { executeOne, insert } from '../../dbHelper';
+const { schemaName, tableName } = constant
 
 export const sendLoginOtp = async (body) => {
     try {
-
-        const userDatafile = constant.files.userData
-        const userOtpfile = constant.files.mobileOtp
-
-        body.otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
+        body.otp = otpGenerator.generate(6, { lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false });
         body.sentTime = moment().format('X')
-        let otpData = await fs.readFile(userOtpfile, "utf-8");
-        otpData = JSON.parse(otpData)
         let otpModel = mobileOtpModel(body)
-        otpData.push(otpModel)
-        otpData = JSON.stringify(otpData)
-        await fs.writeFile(userOtpfile, otpData)
-        let data = await fs.readFile(userDatafile, "utf-8");
-        data = JSON.parse(data)
-        if (data.findIndex((element) =>
-            element.mobile == body.mobile
-        ) > -1) {
+        await insert(schemaName.otp, tableName.mobile_otp, otpModel)
+        const res = await executeOne(`select * from ${schemaName.user}.${tableName.user_detail} where mobile = '${body.mobile}'`)
+        if (res) {
             return { OTP: body.otp }
         }
         else {
             body.encryptionKey = uuid();
             const userModel = registrationModel(body);
-            data.push(userModel);
-            await fs.writeFile(userDatafile, JSON.stringify(data))
+            await insert(schemaName.user, tableName.user_detail, userModel)
             return { OTP: body.otp }
         }
 
@@ -45,15 +35,10 @@ export const sendLoginOtp = async (body) => {
 
 export const verifyLoginOtp = async (body) => {
     try {
-        const userDatafile = constant.files.userData
-        const userOtpfile = constant.files.mobileOtp
-        // let userData = await fs.readFile(userDatafile, "utf-8");
-        let otpData = await fs.readFile(userOtpfile, "utf-8");
-        otpData = JSON.parse(otpData)
-        otpData = otpData.reverse();
-        let res = otpData.find((element) => element.mobile == body.mobile)
-        if (res && res.otp == body.otp) {
-            return (LoginToken({ mobile: res.mobile }) )
+        const otpRes = await executeOne(`select * from ${schemaName.otp}.${tableName.mobile_otp} where mobile = '${body.mobile}' order by id desc limit 1`)
+        if (otpRes && otpRes.otp == body.otp) {
+            const userRes = await executeOne(`select * from ${schemaName.user}.${tableName.user_detail} where mobile = '${body.mobile}'`)
+            return (LoginToken({ mobile: userRes }))
         }
         else {
             throw ({ message: 'Invalid OTP' })

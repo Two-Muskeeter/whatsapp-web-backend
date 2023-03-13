@@ -4,9 +4,13 @@ export default {
         success: true,
         failed: false
     },
-    files: {
-        userData: 'user-data.json',
-        mobileOtp: 'mobile-otp.json'
+    schemaName: {
+        user: 'users',
+        otp: 'otp'
+    },
+    tableName: {
+        user_detail: 'user_detail',
+        mobile_otp: 'mobile_otp',
     }
 
 };

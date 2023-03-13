@@ -16,6 +16,7 @@ const sign = (data, expTime) => {
 export const LoginToken = (ud) => {
     const token = sign({
         mobile: ud.mobile,
+        id: ud.user_id,
         LOGIN_TIME: moment(),
     }, null);
     return {

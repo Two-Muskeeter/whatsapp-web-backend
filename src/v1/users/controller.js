@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid';
 import otpGenerator from 'otp-generator';
 import moment from 'moment';
 import { LoginToken } from '../../tokenGenerator';
-import { executeOne, insert } from '../../dbHelper';
+import { execute, executeOne, insert } from '../../dbHelper';
 const { schemaName, tableName } = constant
 
 export const sendLoginOtp = async (body) => {
@@ -38,7 +38,7 @@ export const verifyLoginOtp = async (body) => {
         const otpRes = await executeOne(`select * from ${schemaName.otp}.${tableName.mobile_otp} where mobile = '${body.mobile}' order by id desc limit 1`)
         if (otpRes && otpRes.otp == body.otp) {
             const userRes = await executeOne(`select * from ${schemaName.user}.${tableName.user_detail} where mobile = '${body.mobile}'`)
-            return (LoginToken({ mobile: userRes }))
+            return (LoginToken({ user: userRes }))
         }
         else {
             throw ({ message: 'Invalid OTP' })
@@ -48,4 +48,24 @@ export const verifyLoginOtp = async (body) => {
         console.error(err)
     }
 
+}
+export const getInfo = async (id) => {
+    try {
+        const res = await executeOne(`select * from ${schemaName.user}.${tableName.user_detail} where user_id = ${id}`)
+        return ({
+            name: res.name,
+            email: res.email,
+            mobile: res.mobile,
+            image: res.image,
+        })
+    }
+    catch (err) {
+        console.error(err)
+    }
+
+}
+
+export const searchProfile = async (input) => {
+    const res = await execute(`select image,name,mobile from ${schemaName.user}.${tableName.user_detail} where name like '${input}%' or mobile like '${input}%' limit 10`)
+    return res
 }

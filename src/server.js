@@ -9,6 +9,7 @@ import moment from 'moment';
 import rfs from "rotating-file-stream";
 import config from './config.js';
 import v1 from './v1/routes/index.js'
+import socketRoutes from './v1/routes/socketRoutes.js';
 import { Server } from "socket.io";
 import http from "http";
 
@@ -29,8 +30,7 @@ const io = new Server(server, {
     }
 })
 io.on("connection", (socket) => {
-    console.log(socket.id)
-
+    socketRoutes(socket)
 })
 const fileName = `${moment().format('YYYY-MM-DD')}.log`;
 const log = rfs.createStream(fileName, {
